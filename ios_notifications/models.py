@@ -181,19 +181,37 @@ class Notification(models.Model):
     Represents a notification which can be pushed to an iOS device.
     """
     service = models.ForeignKey(APNService)
-    message = models.CharField(max_length=200, blank=True, help_text='Alert message to display to the user. Leave empty if no alert should be displayed to the user.')
-    badge = models.PositiveIntegerField(null=True, blank=True, help_text='New application icon badge number. Set to None if the badge number must not be changed.')
-    sound = models.CharField(max_length=30, blank=True, help_text='Name of the sound to play. Leave empty if no sound should be played.')
+    message = models.CharField(
+        max_length=200, blank=True,
+        help_text=('Alert message to display to the user. Leave empty if no '
+                   'alert should be displayed to the user.'))
+    badge = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text=('New application icon badge number. Set to None if the '
+                   'badge number must not be changed.'))
+    sound = models.CharField(
+        max_length=30, blank=True,
+        help_text=('Name of the sound to play. Leave empty if no sound should'
+                   'be played.'))
     created_at = models.DateTimeField(auto_now_add=True)
     last_sent_at = models.DateTimeField(null=True, blank=True)
-    custom_payload = models.CharField(max_length=240, blank=True, help_text='JSON representation of an object containing custom payload.')
+    custom_payload = models.CharField(
+        max_length=240, blank=True,
+        help_text=('JSON representation of an object containing custom'
+                   'payload.'))
+    user_id = models.BigIntegerField(null=True, blank=True, db_index=True)
+    scheduled_send = models.DateTimeField(null=True, blank=True, db_index=True)
 
     def __init__(self, *args, **kwargs):
-        self.persist = getattr(settings, 'IOS_NOTIFICATIONS_PERSIST_NOTIFICATIONS', True)
+        self.persist = getattr(
+            settings, 'IOS_NOTIFICATIONS_PERSIST_NOTIFICATIONS', True)
         super(Notification, self).__init__(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s%s%s' % (self.message, ' ' if self.message and self.custom_payload else '', self.custom_payload)
+        return u'%s%s%s' % (
+            self.message,
+            ' ' if self.message and self.custom_payload else '',
+            self.custom_payload)
 
     @property
     def extra(self):
@@ -253,7 +271,6 @@ class Device(models.Model):
     is_active = models.BooleanField(default=True)
     deactivated_at = models.DateTimeField(null=True, blank=True)
     service = models.ForeignKey(APNService)
-    users = models.ManyToManyField(getattr(settings, 'AUTH_USER_MODEL', 'auth.User'), null=True, blank=True, related_name='ios_devices')
     added_at = models.DateTimeField(auto_now_add=True)
     last_notified_at = models.DateTimeField(null=True, blank=True)
     platform = models.CharField(max_length=30, blank=True, null=True)
