@@ -59,9 +59,11 @@ class BaseService(models.Model):
             self.connection = gevent_openssl.SSL.Connection(context, sock)
         else:
             self.connection = OpenSSL.SSL.Connection(context, sock)
+        print('CONNECTION')
         self.connection.connect((self.hostname, self.PORT))
         self.connection.set_connect_state()
         self.connection.do_handshake()
+        print('CONNECTION DO HANDSHAKE')
 
     def _disconnect(self):
         """
@@ -97,6 +99,7 @@ class APNService(BaseService):
         Establishes an encrypted SSL socket connection to the service.
         After connecting the socket can be written to or read from.
         """
+        print(self)
         return super(APNService, self)._connect(self.certificate, self.private_key, self.passphrase)
 
     def push_notification_to_devices(self, notification, devices=None, chunk_size=100):
@@ -114,6 +117,7 @@ class APNService(BaseService):
         Writes the message for the supplied devices to
         the APN Service SSL socket.
         """
+        print('START WRITE MSG')
         if not isinstance(notification, Notification):
             raise TypeError('notification should be an instance of ios_notifications.models.Notification')
 
@@ -133,10 +137,14 @@ class APNService(BaseService):
 
             for device in chunk:
                 if not device.is_active:
+                    print('NOT ACTIVE')
                     continue
                 try:
+                    print('TRY SEND')
                     self.connection.send(self.pack_message(payload, device))
+                    print('SENT')
                 except (OpenSSL.SSL.WantWriteError, socket.error) as e:
+                    print('SENT EXCEPTION')
                     if isinstance(e, socket.error) and isinstance(e.args, tuple) and e.args[0] != errno.EPIPE:
                         raise e  # Unexpected exception, raise it.
                     self._disconnect()
