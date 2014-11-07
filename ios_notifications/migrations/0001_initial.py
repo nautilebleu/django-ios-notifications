@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('appuser', '0002_auto_20141029_1047'),
     ]
 
     operations = [
@@ -72,8 +71,6 @@ class Migration(migrations.Migration):
                 ('custom_payload', models.CharField(help_text=b'JSON representation of an object containing custom payload.', max_length=240, blank=True)),
                 ('loc_payload', models.CharField(help_text=b'JSON representation of an object containing the localization payload.', max_length=240, blank=True)),
                 ('scheduled_send', models.DateTimeField(db_index=True, null=True, blank=True)),
-                ('appuser', models.ForeignKey(related_name='ios_messaging_notifications', blank=True, to='appuser.AppUser', null=True)),
-                ('service', models.ForeignKey(to='ios_notifications.APNService')),
             ],
             options={
             },
