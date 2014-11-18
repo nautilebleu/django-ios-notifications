@@ -377,7 +377,7 @@ class DefaultSettings(TestCase):
         self.assertEqual(True, get_setting('IOS_NOTIFICATIONS_PERSIST_NOTIFICATIONS'))
 
     def test_authentication_setting(self):
-        self.assertEqual(None, get_setting('IOS_NOTIFICATIONS_AUTHENTICATION'))
+        self.assertEqual('AuthNone', get_setting('IOS_NOTIFICATIONS_AUTHENTICATION'))
 
     def test_auth_user_model(self):
         self.assertEqual('auth.User', get_setting('AUTH_USER_MODEL'))

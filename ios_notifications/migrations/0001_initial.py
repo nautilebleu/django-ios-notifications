@@ -70,7 +70,6 @@ class Migration(migrations.Migration):
                 ('last_sent_at', models.DateTimeField(null=True, blank=True)),
                 ('custom_payload', models.CharField(help_text=b'JSON representation of an object containing custom payload.', max_length=240, blank=True)),
                 ('loc_payload', models.CharField(help_text=b'JSON representation of an object containing the localization payload.', max_length=240, blank=True)),
-                ('scheduled_send', models.DateTimeField(db_index=True, null=True, blank=True)),
             ],
             options={
             },
